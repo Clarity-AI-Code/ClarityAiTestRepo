@@ -1,4 +1,5 @@
 import os
+import requests
 from datetime import datetime, timezone
 
 from fastapi import FastAPI, Request
@@ -58,22 +59,21 @@ def health():
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(payload: ChatRequest, request: Request):
-    """
-    Temporary placeholder endpoint.
-
-    Later, replace build_placeholder_answer() with a call to:
-    - Ollama
-    - Hugging Face local model
-    - Mistral API
-    - another LLM backend
-    """
     user_message = payload.message.strip()
+    mode = payload.mode or "simple"
 
-    answer = build_placeholder_answer(user_message, payload.mode)
+    try:
+        answer = call_ollama(user_message, mode)
+        provider = "ollama-mistral"
+
+    except Exception as e:
+        print("LLM error:", e)
+        answer = build_placeholder_answer(user_message, mode)
+        provider = "placeholder-fallback"
 
     return ChatResponse(
         answer=answer,
-        provider="placeholder-backend",
+        provider=provider,
         timestamp=datetime.now(timezone.utc).isoformat(),
     )
 
@@ -105,6 +105,92 @@ def build_placeholder_answer(message: str, mode: str | None) -> str:
         f"Deine Nachricht war: {message}"
     )
 
+def call_ollama(user_message: str, mode: str) -> str:
+    system_prompt = build_system_prompt(mode)
+
+    response = requests.post(
+        "http://localhost:11434/api/generate",
+        json={
+            "model": "mistral",
+            "prompt": f"{system_prompt}\n\nNutzerfrage:\n{user_message}",
+            "stream": False,
+        },
+        timeout=180,
+    )
+
+    response.raise_for_status()
+
+    data = response.json()
+    answer = data.get("response", "").strip()
+
+    if not answer:
+        raise ValueError("Ollama returned an empty response")
+
+    return answer
+
+def build_system_prompt(mode: str) -> str:
+    base = """
+Du bist Clarity AI.
+Du bist ein geduldiger digitaler Helfer für ältere Menschen.
+
+Antworte immer auf Deutsch.
+Erkläre alles in sehr einfacher Sprache.
+Nutze kurze Sätze.
+Gehe Schritt für Schritt vor.
+Erkläre Fachwörter sofort.
+Sprich respektvoll, aber nicht kindlich.
+Stelle höchstens eine Rückfrage.
+Gib keine endgültige Rechts-, Finanz- oder Medizinberatung.
+Bei wichtigen Entscheidungen empfiehl eine Fachperson oder eine vertraute Person.
+""".strip()
+
+    modes = {
+        "frag": """
+Modus: Frag einfach.
+Beantworte die Frage klar und einfach.
+Nutze ein kurzes Beispiel aus dem Alltag.
+""",
+        "mail": """
+Modus: Mail-Assistent.
+Formuliere eine höfliche E-Mail oder einen Brief.
+Nutze eine klare Betreffzeile.
+Schreibe nicht zu lang.
+""",
+        "scam": """
+Modus: Scam-Check.
+Prüfe, ob die Nachricht nach Betrug aussieht.
+Sage klar: eher sicher, unklar, oder gefährlich.
+Nenne Warnzeichen.
+Gib einfache nächste Schritte.
+Sage: Keine Links anklicken. Keine Bankdaten oder Passwörter eingeben.
+""",
+        "klartext": """
+Modus: Klartext.
+Erkläre einen Brief oder Text in einfachen Worten.
+Sage:
+1. Worum geht es?
+2. Gibt es eine Frist?
+3. Was sollte man als Nächstes tun?
+""",
+        "technik": """
+Modus: Technik-Lotse.
+Gib eine einfache Schritt-für-Schritt-Anleitung.
+Immer nur kleine Schritte.
+Frage nach, wenn wichtige Informationen fehlen.
+""",
+        "wasseich": """
+Modus: Was seh ich?
+Fotoerkennung ist in diesem Test noch nicht aktiv.
+Erkläre freundlich, dass später Bilder erkannt werden können.
+Warne bei unbekannten Pflanzen, Beeren oder Pilzen.
+""",
+        "simple": """
+Modus: Einfache Erklärung.
+Antworte kurz, ruhig und verständlich.
+""",
+    }
+
+    return base + "\n\n" + modes.get(mode, modes["simple"]).strip()
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", "8000"))
