@@ -8,6 +8,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 
+
 :root{
   --g:#1B4332;
   --g2:#2D6A4F;
@@ -45,6 +46,8 @@ body{
   flex-direction:column;
   -webkit-font-smoothing:antialiased;
 }
+
+
 
 /* ══ ONBOARDING ═══════════════════════ */
 #ob{
@@ -1163,6 +1166,32 @@ body{
 </div>
 
 <script>
+  let API_URL = localStorage.getItem("clarity_api_url") || "";
+
+function setApiUrl() {
+  const current = localStorage.getItem("clarity_api_url") || "";
+  const url = prompt("Bitte ngrok Backend-URL eingeben:", current);
+
+  if (!url) return;
+
+  const cleanUrl = url.replace(/\/$/, "");
+  const finalUrl = cleanUrl.endsWith("/chat") ? cleanUrl : cleanUrl + "/chat";
+
+  localStorage.setItem("clarity_api_url", finalUrl);
+  API_URL = finalUrl;
+
+  alert("Backend gespeichert:\n" + finalUrl);
+}
+
+function ensureApiUrl() {
+  API_URL = localStorage.getItem("clarity_api_url") || "";
+
+  if (!API_URL) {
+    setApiUrl();
+  }
+
+  return API_URL;
+}
 // ── STATE ──────────────────────────────────
 let userName = '', appMode = 'large', isRec = false, loadIv = null;
 const seen = new Set();
@@ -1799,13 +1828,17 @@ function doOcr(mod) {
 }
 
 // ── GENERATE ──────────────────────────────
-function generate(mod) {
+async function generate(mod) {
   const ta = document.getElementById('f-ta');
   const rw = document.getElementById('result-wrap');
   const ferr = document.getElementById('ferr');
 
   if (mod !== 'wasseich' && mod !== 'scam' && ta && !ta.value.trim()) {
-    if (ferr) { ferr.classList.add('show'); setTimeout(() => ferr.classList.remove('show'), 3000); }
+    if (ferr) {
+      ferr.classList.add('show');
+      setTimeout(() => ferr.classList.remove('show'), 3000);
+    }
+
     ta.style.borderColor = 'var(--red)';
     setTimeout(() => { ta.style.borderColor = ''; }, 1500);
     return;
@@ -1816,58 +1849,194 @@ function generate(mod) {
 
   const rloading = document.getElementById('rloading');
   const ri = document.getElementById('result-inner');
+
   if (rloading) rloading.style.display = 'flex';
   if (ri) ri.style.display = 'none';
 
   // Animate loading text
   let li = 0;
   clearInterval(loadIv);
+
   loadIv = setInterval(() => {
     const ltxt = document.getElementById('ltxt');
+
     if (ltxt) {
       ltxt.style.opacity = '0';
+
       setTimeout(() => {
-        if (ltxt) { ltxt.textContent = LOAD_MSGS[li % LOAD_MSGS.length]; ltxt.style.opacity = '1'; li++; }
+        if (ltxt) {
+          ltxt.textContent = LOAD_MSGS[li % LOAD_MSGS.length];
+          ltxt.style.opacity = '1';
+          li++;
+        }
       }, 300);
     }
   }, 900);
 
   rw.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-  setTimeout(() => {
-    clearInterval(loadIv);
-    if (rloading) rloading.style.display = 'none';
-    if (ri) ri.style.display = 'block';
+  const userText = ta && ta.value.trim()
+    ? ta.value.trim()
+    : `Bitte antworte für das Modul: ${mod}`;
 
-    const m = MODS[mod];
-    const rtxt = document.getElementById('rtxt');
-    const sbar = document.getElementById('sbar');
-    const scamBanner = document.getElementById('scam-banner');
+  try {
+    const apiUrl = await getApiUrl();
 
-    if (mod === 'scam') {
-      if (scamBanner) {
-        scamBanner.className = 'scam-banner danger';
-        scamBanner.innerHTML = '⚠️  Vorsicht – hohe Betrugswahrscheinlichkeit!';
-      }
-      if (rtxt) rtxt.innerHTML = `<h3>Analyse</h3>
-<p>🔴 Künstlicher Zeitdruck erzeugt</p>
-<p>🔴 Unbekannte, verkürzte Link-Adresse</p>
-<p>🔴 Unpersönliche Anrede</p>
-<p>🔴 Rechtschreibfehler entdeckt</p>
-<p><strong>Was tun?</strong> Klicken Sie auf keinen Link. Löschen Sie die Nachricht. Rufen Sie Ihre Bank direkt an.</p>`;
-    } else if (mod === 'wasseich') {
-      if (rtxt) rtxt.innerHTML = `<h3>Das ist ein Gewöhnlicher Blauhelm-Pilz</h3>
-<p>🍄 <strong>Name:</strong> Psilocybe semilanceata</p>
-<p>📍 <strong>Wo er wächst:</strong> Auf Wiesen und Weiden, oft nach Regen</p>
-<p>ℹ️ <strong>Wissenswertes:</strong> Dieser Pilz ist klein und kegelförmig mit einem braunen Hut.</p>
-<p style="background:var(--redl);border:2px solid #F5B0B0;border-radius:12px;padding:14px;color:var(--red);font-weight:700;margin-top:8px">⚠️ Achtung: Dieser Pilz ist nicht essbar. Bitte nicht anfassen oder essen.</p>`;
-    } else {
-      if (sbar) { sbar.classList.add('show'); setTimeout(() => sbar.classList.remove('show'), 2500); }
-      if (rtxt && m.output) rtxt.innerHTML = m.output();
+    if (!apiUrl) {
+      throw new Error("No API URL configured");
     }
 
-    if (ri) ri.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 2200);
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: userText,
+        mode: mod
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error("Backend request failed");
+    }
+
+    const data = await response.json();
+
+    showResult({
+      mod,
+      html: `
+        <h3>Antwort</h3>
+        <p>${escapeHtml(data.answer || "Keine Antwort erhalten.").replace(/\n/g, "<br>")}</p>
+      `,
+      source: "backend"
+    });
+
+  } catch (error) {
+    console.warn("Backend unavailable. Using static fallback.", error);
+
+    showResult({
+      mod,
+      html: getStaticFallback(mod),
+      source: "fallback"
+    });
+  }
+}
+
+// ── API URL LOADING ───────────────────────
+async function getApiUrl() {
+  // First try config.json from GitHub Pages
+  try {
+    const res = await fetch("./config.json?ts=" + Date.now());
+
+    if (res.ok) {
+      const config = await res.json();
+
+      if (config.apiBaseUrl) {
+        return normalizeApiUrl(config.apiBaseUrl);
+      }
+    }
+  } catch (error) {
+    console.warn("Could not load config.json", error);
+  }
+
+  // Optional fallback: manually saved localStorage URL
+  const saved = localStorage.getItem("clarity_api_url");
+
+  if (saved) {
+    return normalizeApiUrl(saved);
+  }
+
+  return "";
+}
+
+// ── SHOW RESULT ───────────────────────────
+function showResult({ mod, html, source }) {
+  clearInterval(loadIv);
+
+  const rloading = document.getElementById('rloading');
+  const ri = document.getElementById('result-inner');
+  const rtxt = document.getElementById('rtxt');
+  const sbar = document.getElementById('sbar');
+  const scamBanner = document.getElementById('scam-banner');
+
+  if (rloading) rloading.style.display = 'none';
+  if (ri) ri.style.display = 'block';
+
+  if (scamBanner) {
+    scamBanner.className = 'scam-banner';
+    scamBanner.innerHTML = '';
+  }
+
+  if (mod === 'scam' && scamBanner) {
+    scamBanner.className = 'scam-banner danger';
+
+    if (source === "backend") {
+      scamBanner.innerHTML = '⚠️ Ergebnis der Prüfung';
+    } else {
+      scamBanner.innerHTML = '⚠️ Vorsicht – möglicherweise Betrug!';
+    }
+  }
+
+  if (sbar && mod !== 'scam') {
+    sbar.classList.add('show');
+    setTimeout(() => sbar.classList.remove('show'), 2500);
+  }
+
+  if (rtxt) {
+    rtxt.innerHTML = html;
+  }
+
+  if (ri) {
+    ri.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// ── STATIC FALLBACK ANSWERS ────────────────
+function getStaticFallback(mod) {
+  const m = MODS[mod];
+
+  if (mod === 'scam') {
+    return `<h3>Analyse</h3>
+<p>🔴 Künstlicher Zeitdruck erkannt</p>
+<p>🔴 Unbekannter oder verkürzter Link</p>
+<p>🔴 Die Nachricht wirkt unpersönlich</p>
+<p>🔴 Es wird Druck gemacht</p>
+<p><strong>Was tun?</strong> Klicken Sie auf keinen Link. Geben Sie keine Bankdaten ein. Fragen Sie im Zweifel eine vertraute Person.</p>`;
+  }
+
+  if (mod === 'wasseich') {
+    return `<h3>Demo-Ergebnis</h3>
+<p>Die Fotoerkennung ist in diesem Test noch nicht mit der KI verbunden.</p>
+<p>Später kann die App hier Pflanzen, Tiere, Pilze oder Beeren erklären.</p>
+<p style="background:var(--redl);border:2px solid #F5B0B0;border-radius:12px;padding:14px;color:var(--red);font-weight:700;margin-top:8px">⚠️ Wichtig: Essen Sie keine unbekannten Pflanzen, Beeren oder Pilze.</p>`;
+  }
+
+  if (m && typeof m.output === "function") {
+    return m.output();
+  }
+
+  return `<h3>Demo-Antwort</h3>
+<p>Der KI-Server ist gerade nicht verbunden. Die App zeigt deshalb eine vorbereitete Beispielantwort.</p>`;
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function normalizeApiUrl(url) {
+  const cleanUrl = String(url || "").trim().replace(/\/$/, "");
+
+  if (!cleanUrl) return "";
+
+  return cleanUrl.endsWith("/chat")
+    ? cleanUrl
+    : cleanUrl + "/chat";
 }
 
 function resetResult() {
