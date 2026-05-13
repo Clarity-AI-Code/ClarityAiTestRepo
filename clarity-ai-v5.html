@@ -1,0 +1,1915 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Clarity AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Nunito+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+:root{
+  --g:#1B4332;
+  --g2:#2D6A4F;
+  --g3:#52B788;
+  --gp:#D8F3DC;
+  --gu:#F0FBF4;
+  --white:#FFFFFF;
+  --cream:#FDFCF8;
+  --warm:#F5F3EE;
+  --b:#E6E2D8;
+  --b2:#CFCABE;
+  --ink:#111110;
+  --ink2:#2E2E2C;
+  --ink3:#6B6B66;
+  --ink4:#ADADAA;
+  --red:#B83232;
+  --redl:#FDECEC;
+  --amber:#9B6500;
+  --amberl:#FEF3D8;
+  --sh:0 2px 12px rgba(0,0,0,.05);
+  --shm:0 4px 28px rgba(0,0,0,.09);
+  --r:22px;
+  --rm:16px;
+  --rs:12px;
+}
+
+html{font-size:17px}
+body{
+  font-family:'Nunito Sans',sans-serif;
+  background:var(--warm);
+  color:var(--ink);
+  height:100dvh;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ══ ONBOARDING ═══════════════════════ */
+#ob{
+  position:fixed;inset:0;
+  background:var(--white);
+  z-index:9999;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+
+.ob-inner{
+  max-width:480px;
+  margin:0 auto;
+  padding:52px 28px 90px;
+}
+
+.ob-logo{
+  font-family:'Nunito',sans-serif;
+  font-size:30px;font-weight:900;
+  color:var(--g);letter-spacing:-.5px;
+  margin-bottom:48px;
+}
+.ob-logo b{color:var(--ink);font-weight:900}
+
+.ob-prog{display:flex;gap:7px;margin-bottom:44px}
+.ob-seg{height:5px;flex:1;background:var(--b);border-radius:3px;transition:background .4s}
+.ob-seg.on{background:var(--g)}
+
+.ob-step{display:none;animation:fadeUp .4s ease}
+.ob-step.show{display:block}
+
+.ob-eyebrow{
+  font-size:12px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--g);margin-bottom:14px;
+}
+
+.ob-h{
+  font-family:'Nunito',sans-serif;
+  font-size:clamp(28px,6vw,38px);
+  font-weight:800;line-height:1.15;
+  letter-spacing:-.5px;
+  color:var(--ink);margin-bottom:12px;
+}
+
+.ob-sub{
+  font-size:16px;color:var(--ink3);
+  line-height:1.65;margin-bottom:32px;
+}
+
+.ob-input{
+  width:100%;padding:17px 20px;
+  border:2px solid var(--b2);
+  border-radius:var(--rm);
+  font-family:'Nunito Sans',sans-serif;
+  font-size:18px;color:var(--ink);
+  background:var(--cream);outline:none;
+  transition:border-color .2s;margin-bottom:10px;
+}
+.ob-input:focus{border-color:var(--g)}
+.ob-input::placeholder{color:var(--ink4)}
+
+.ob-hint{font-size:13px;color:var(--ink4);margin-bottom:28px;font-style:italic}
+
+/* SIZE PICKER */
+.ob-sizes{display:flex;gap:10px;margin-bottom:32px}
+.ob-size{
+  flex:1;padding:18px 12px;
+  border:2px solid var(--b);
+  border-radius:var(--rm);
+  background:var(--cream);
+  text-align:center;cursor:pointer;
+  transition:all .2s;
+}
+.ob-size:hover{border-color:var(--g)}
+.ob-size.sel{border-color:var(--g);background:var(--gu)}
+.ob-size-letter{
+  font-family:'Nunito',sans-serif;
+  font-weight:800;color:var(--g);
+  display:block;margin-bottom:6px;
+}
+.ob-size:nth-child(1) .ob-size-letter{font-size:20px}
+.ob-size:nth-child(2) .ob-size-letter{font-size:26px}
+.ob-size:nth-child(3) .ob-size-letter{font-size:32px}
+.ob-size-lbl{font-size:12px;color:var(--ink3);font-weight:600}
+
+/* MODULE PREVIEW */
+.ob-mods{display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
+.ob-mod{
+  display:flex;align-items:center;gap:14px;
+  padding:16px 18px;
+  border:1.5px solid var(--b);
+  border-radius:var(--rm);
+  background:var(--cream);
+}
+.ob-mod-ico{
+  width:44px;height:44px;
+  border-radius:12px;
+  background:var(--gp);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+}
+.ob-mod-name{font-size:15px;font-weight:700;margin-bottom:2px}
+.ob-mod-desc{font-size:13px;color:var(--ink3)}
+
+/* PWA CARD */
+.ob-pwa{
+  background:var(--gu);
+  border:2px solid var(--gp);
+  border-radius:var(--r);
+  padding:22px;margin-bottom:28px;
+}
+.ob-pwa-title{
+  font-family:'Nunito',sans-serif;
+  font-size:17px;font-weight:800;
+  color:var(--g);margin-bottom:16px;
+  display:flex;align-items:center;gap:8px;
+}
+.pwa-tabs{display:flex;gap:8px;margin-bottom:16px}
+.pwa-tab{
+  padding:7px 16px;border-radius:20px;
+  font-size:13px;font-weight:700;cursor:pointer;
+  border:2px solid var(--b);background:var(--white);color:var(--ink3);
+  transition:all .15s;
+}
+.pwa-tab.on{background:var(--g);color:var(--white);border-color:var(--g)}
+.pwa-dev{display:none}
+.pwa-dev.show{display:block}
+.pwa-step{
+  display:flex;align-items:flex-start;gap:12px;
+  margin-bottom:12px;font-size:14px;
+  color:var(--ink2);line-height:1.5;
+}
+.pwa-num{
+  width:26px;height:26px;
+  background:var(--g);color:var(--white);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:800;flex-shrink:0;
+}
+
+/* BUTTONS */
+.ob-btn{
+  width:100%;padding:18px;
+  background:var(--ink);color:var(--white);
+  border:none;border-radius:var(--rm);
+  font-family:'Nunito',sans-serif;
+  font-size:17px;font-weight:800;
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  letter-spacing:-.2px;
+}
+.ob-btn:hover{background:var(--g)}
+.ob-btn-skip{
+  width:100%;padding:14px;
+  background:transparent;color:var(--ink4);
+  border:2px solid var(--b);
+  border-radius:var(--rm);
+  font-family:'Nunito Sans',sans-serif;
+  font-size:15px;font-weight:600;
+  cursor:pointer;transition:all .2s;margin-top:10px;
+}
+.ob-btn-skip:hover{color:var(--ink3);border-color:var(--b2)}
+
+/* ══ APP ══════════════════════════════ */
+#app{display:none;flex:1;flex-direction:column;height:100dvh;overflow:hidden}
+#app.show{display:flex}
+
+/* TOPBAR */
+.topbar{
+  height:62px;
+  background:var(--white);
+  border-bottom:2px solid var(--b);
+  display:flex;align-items:center;
+  padding:0 20px;gap:10px;
+  flex-shrink:0;z-index:50;
+}
+
+.t-logo{
+  font-family:'Nunito',sans-serif;
+  font-size:22px;font-weight:900;
+  color:var(--g);letter-spacing:-.5px;
+  cursor:pointer;flex:1;
+}
+.t-logo b{color:var(--ink)}
+
+.t-right{display:flex;align-items:center;gap:8px}
+
+.size-row{
+  display:flex;background:var(--warm);
+  border:2px solid var(--b);border-radius:20px;padding:3px;gap:2px;
+}
+.sz{
+  padding:4px 10px;border-radius:14px;
+  border:none;background:transparent;
+  font-family:'Nunito',sans-serif;font-weight:800;
+  color:var(--ink4);cursor:pointer;transition:all .15s;
+}
+.sz.on{background:var(--white);color:var(--ink);box-shadow:var(--sh)}
+.sz:first-child{font-size:13px}
+.sz:last-child{font-size:16px}
+
+.help-btn{
+  width:38px;height:38px;
+  border-radius:50%;
+  border:2px solid var(--b);
+  background:var(--warm);
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;cursor:pointer;transition:all .15s;
+  font-family:'Nunito',sans-serif;font-weight:800;color:var(--ink3);
+}
+.help-btn:hover{border-color:var(--g);color:var(--g)}
+
+/* BODY */
+.app-body{flex:1;overflow:hidden;position:relative}
+
+.view{
+  position:absolute;inset:0;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  display:none;flex-direction:column;
+}
+.view.on{display:flex}
+
+/* ══ HOME ═════════════════════════════ */
+#v-home{background:var(--warm)}
+
+.home-top{
+  padding:28px 20px 20px;
+  background:var(--white);
+  border-bottom:2px solid var(--b);
+}
+
+.home-greeting{
+  font-size:13px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink4);margin-bottom:8px;
+}
+
+.home-title{
+  font-family:'Nunito',sans-serif;
+  font-size:clamp(24px,5vw,32px);
+  font-weight:800;line-height:1.2;
+  letter-spacing:-.3px;color:var(--ink);
+}
+
+.home-title em{
+  font-style:normal;color:var(--g);
+}
+
+.home-sub{font-size:15px;color:var(--ink3);margin-top:6px}
+
+.home-list{
+  padding:16px 16px 100px;
+  display:flex;flex-direction:column;gap:12px;
+}
+
+/* MODULE CARD */
+.mod-card{
+  background:var(--white);
+  border-radius:var(--r);
+  border:2px solid var(--b);
+  padding:22px 20px;
+  cursor:pointer;
+  transition:all .2s;
+  display:flex;align-items:center;gap:18px;
+  box-shadow:var(--sh);
+  position:relative;overflow:hidden;
+}
+.mod-card::before{
+  content:'';
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:5px;
+  background:var(--b);
+  transition:background .2s;
+}
+.mod-card:hover{
+  border-color:var(--g2);
+  box-shadow:var(--shm);
+  transform:translateY(-2px);
+}
+.mod-card:hover::before{background:var(--g)}
+.mod-card:active{transform:translateY(0)}
+
+.mc-ico{
+  width:54px;height:54px;
+  border-radius:16px;
+  background:var(--warm);
+  border:2px solid var(--b);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;flex-shrink:0;
+  transition:all .2s;
+}
+.mod-card:hover .mc-ico{background:var(--gp);border-color:var(--gp)}
+
+.mc-body{flex:1}
+.mc-name{
+  font-family:'Nunito',sans-serif;
+  font-size:18px;font-weight:800;
+  color:var(--ink);margin-bottom:4px;
+  letter-spacing:-.2px;
+}
+.mc-desc{font-size:14px;color:var(--ink3);line-height:1.4}
+
+.mc-arrow{
+  font-size:22px;color:var(--b2);
+  transition:all .2s;flex-shrink:0;
+}
+.mod-card:hover .mc-arrow{color:var(--g);transform:translateX(4px)}
+
+.mc-new{
+  position:absolute;top:14px;right:14px;
+  font-size:10px;font-weight:800;
+  padding:3px 9px;border-radius:20px;
+  background:var(--g);color:var(--white);
+  letter-spacing:.06em;
+}
+
+/* ══ MODULE VIEW ══════════════════════ */
+#v-module{background:var(--warm)}
+.mod-view{flex:1;display:flex;flex-direction:column;animation:fadeUp .3s ease}
+
+/* MOD HEADER */
+.mod-header{
+  background:var(--white);
+  border-bottom:2px solid var(--b);
+  padding:16px 20px 18px;
+}
+.mod-back{
+  display:flex;align-items:center;gap:6px;
+  font-size:14px;font-weight:700;color:var(--ink3);
+  cursor:pointer;margin-bottom:16px;
+  width:fit-content;transition:color .15s;
+}
+.mod-back:hover{color:var(--g)}
+.mod-back svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round}
+
+.mod-head-row{display:flex;align-items:center;gap:14px}
+.mod-head-ico{
+  width:52px;height:52px;border-radius:16px;
+  background:var(--gp);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;flex-shrink:0;
+}
+.mod-head-title{
+  font-family:'Nunito',sans-serif;
+  font-size:22px;font-weight:800;
+  letter-spacing:-.3px;margin-bottom:3px;
+}
+.mod-head-sub{font-size:14px;color:var(--ink3);line-height:1.4}
+
+/* FIRST TIME INTRO */
+.first-intro{
+  background:var(--gu);
+  border:2px solid var(--gp);
+  border-radius:var(--rm);
+  padding:18px 20px;
+  margin:16px 16px 0;
+  display:flex;gap:12px;
+  animation:fadeUp .4s ease;
+}
+.fi-ico{font-size:24px;flex-shrink:0}
+.fi-title{font-size:13px;font-weight:800;color:var(--g);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.fi-text{font-size:14px;color:var(--ink2);line-height:1.6}
+.fi-close{font-size:13px;color:var(--g);font-weight:700;cursor:pointer;margin-top:8px;display:inline-block;text-decoration:underline;text-underline-offset:2px}
+
+/* MOD BODY */
+.mod-body{padding:16px 16px 100px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;flex:1}
+
+/* LABELS */
+.field-label{font-size:13px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
+
+/* TEXT INPUTS */
+.field-input{
+  width:100%;padding:15px 18px;
+  border:2px solid var(--b2);
+  border-radius:var(--rm);
+  font-family:'Nunito Sans',sans-serif;
+  font-size:16px;color:var(--ink);
+  background:var(--white);outline:none;
+  transition:border-color .2s;
+}
+.field-input:focus{border-color:var(--g)}
+.field-input::placeholder{color:var(--ink4)}
+
+/* TEXTAREA */
+.field-ta{
+  width:100%;padding:16px 18px;
+  border:2px solid var(--b2);
+  border-radius:var(--rm);
+  font-family:'Nunito Sans',sans-serif;
+  font-size:16px;line-height:1.65;
+  color:var(--ink);background:var(--white);
+  resize:none;outline:none;
+  transition:border-color .2s;min-height:110px;
+}
+.field-ta:focus{border-color:var(--g)}
+.field-ta::placeholder{color:var(--ink4)}
+
+/* DICT BTN */
+.dict-wrap{display:flex;gap:10px;align-items:flex-end}
+.dict-btn{
+  width:52px;height:52px;border-radius:50%;
+  background:var(--white);
+  border:2px solid var(--b2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s;flex-shrink:0;
+  box-shadow:var(--sh);font-size:22px;
+}
+.dict-btn:hover{background:var(--g);border-color:var(--g)}
+.dict-btn.rec{background:var(--red);border-color:var(--red);animation:recPulse 1.2s infinite}
+@keyframes recPulse{0%,100%{box-shadow:0 0 0 0 rgba(184,50,50,.3)}50%{box-shadow:0 0 0 10px rgba(184,50,50,0)}}
+
+/* CHIP ROWS */
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{
+  padding:10px 18px;
+  border:2px solid var(--b2);
+  border-radius:20px;
+  font-size:15px;font-weight:600;
+  cursor:pointer;transition:all .15s;
+  background:var(--white);color:var(--ink2);
+}
+.chip:hover{border-color:var(--g);color:var(--g)}
+.chip.on{background:var(--g);color:var(--white);border-color:var(--g)}
+
+/* BIG OPTION BUTTONS */
+.big-opts{display:flex;flex-direction:column;gap:10px}
+.big-opt{
+  display:flex;align-items:center;gap:14px;
+  padding:18px 20px;
+  border:2px solid var(--b);
+  border-radius:var(--rm);
+  background:var(--white);
+  cursor:pointer;transition:all .2s;
+  font-size:16px;font-weight:600;
+  color:var(--ink2);
+}
+.big-opt:hover{border-color:var(--g);color:var(--g);background:var(--gu)}
+.big-opt-ico{font-size:28px;flex-shrink:0}
+
+/* DEVICE STEPS */
+.step-section{display:flex;flex-direction:column;gap:14px}
+.step-hidden{display:none}
+.step-visible{display:flex;flex-direction:column;gap:14px;animation:fadeUp .3s ease}
+
+/* UPLOAD ZONE */
+.upload-zone{
+  border:3px dashed var(--b2);
+  border-radius:var(--rm);
+  padding:28px 20px;
+  display:flex;flex-direction:column;
+  align-items:center;text-align:center;
+  gap:10px;cursor:pointer;
+  transition:all .2s;background:var(--white);
+}
+.upload-zone:hover{border-color:var(--g);background:var(--gu)}
+.upload-zone-ico{font-size:40px}
+.upload-zone-title{font-size:16px;font-weight:700;color:var(--ink)}
+.upload-zone-sub{font-size:13px;color:var(--ink3)}
+
+/* CAT GRID */
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cat-card{
+  padding:18px 14px;
+  border:2px solid var(--b);
+  border-radius:var(--rm);
+  background:var(--white);
+  cursor:pointer;transition:all .2s;
+  text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.cat-card:hover{border-color:var(--g);background:var(--gu)}
+.cat-card.on{border-color:var(--g);background:var(--gu)}
+.cat-card-ico{font-size:32px}
+.cat-card-name{font-size:14px;font-weight:700;color:var(--ink)}
+
+/* MAIN ACTION BTN */
+.main-btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:20px;
+  background:var(--g);color:var(--white);
+  border:none;border-radius:var(--rm);
+  font-family:'Nunito',sans-serif;
+  font-size:18px;font-weight:800;
+  cursor:pointer;transition:all .2s;
+  letter-spacing:-.2px;
+  box-shadow:0 4px 20px rgba(27,67,50,.25);
+}
+.main-btn:hover{background:var(--g2);transform:translateY(-2px);box-shadow:0 6px 28px rgba(27,67,50,.3)}
+.main-btn:active{transform:translateY(0)}
+.main-btn:disabled{background:var(--b2);box-shadow:none;cursor:not-allowed;transform:none}
+
+/* ROTATING PROMPT */
+.rotating-wrap{
+  background:var(--white);
+  border:2px solid var(--b);
+  border-radius:var(--rm);
+  overflow:hidden;
+}
+.rotating-hint{
+  padding:14px 18px 0;
+  font-family:'Nunito',sans-serif;
+  font-size:19px;font-weight:700;
+  color:var(--ink4);font-style:italic;
+  min-height:34px;transition:opacity .4s;
+}
+.rotating-hint.fade{opacity:0}
+
+/* ERROR / WARNING */
+.field-error{
+  padding:12px 16px;
+  background:var(--amberl);
+  border:2px solid #E8C060;
+  border-radius:var(--rs);
+  font-size:14px;color:var(--amber);
+  font-weight:600;display:none;
+}
+.field-error.show{display:block;animation:fadeUp .3s ease}
+
+/* POISON WARNING */
+.poison-warn{
+  padding:16px 18px;
+  background:var(--redl);
+  border:2px solid #F5B0B0;
+  border-radius:var(--rm);
+  display:flex;gap:12px;
+  font-size:15px;color:var(--red);
+  font-weight:600;line-height:1.5;
+}
+
+/* ══ RESULT ═══════════════════════════ */
+.result-wrap{
+  background:var(--white);
+  border:2px solid var(--b);
+  border-radius:var(--r);
+  overflow:hidden;
+  display:none;
+  animation:fadeUp .4s ease;
+}
+.result-wrap.show{display:block}
+
+/* LOADING */
+.result-loading{
+  padding:40px 20px;
+  display:flex;flex-direction:column;
+  align-items:center;gap:18px;
+}
+.loading-bars{display:flex;gap:5px;align-items:center}
+.lb{
+  width:4px;border-radius:3px;
+  background:var(--b2);
+  animation:barDance 1.3s ease infinite;
+}
+.lb:nth-child(1){height:14px;animation-delay:0s}
+.lb:nth-child(2){height:22px;animation-delay:.15s}
+.lb:nth-child(3){height:30px;animation-delay:.3s}
+.lb:nth-child(4){height:22px;animation-delay:.45s}
+.lb:nth-child(5){height:14px;animation-delay:.6s}
+@keyframes barDance{0%,100%{background:var(--b2);transform:scaleY(.6)}50%{background:var(--g);transform:scaleY(1)}}
+.loading-txt{font-size:15px;color:var(--ink3);font-weight:600;min-height:22px;transition:opacity .3s}
+
+/* SUCCESS FLASH */
+.success-bar{
+  display:none;
+  background:var(--gu);
+  border-bottom:2px solid var(--gp);
+  padding:14px 20px;
+  align-items:center;gap:10px;
+  font-size:15px;font-weight:700;color:var(--g);
+}
+.success-bar.show{display:flex;animation:fadeUp .3s ease}
+.success-dot{width:10px;height:10px;border-radius:50%;background:var(--g)}
+
+/* SCAM BANNER */
+.scam-banner{
+  display:none;
+  padding:16px 20px;
+  border-bottom:2px solid;
+  align-items:center;gap:12px;
+  font-size:16px;font-weight:800;
+}
+.scam-banner.danger{display:flex;background:var(--redl);border-color:#F5B0B0;color:var(--red)}
+.scam-banner.safe{display:flex;background:var(--gu);border-color:var(--gp);color:var(--g)}
+
+/* RESULT CONTENT */
+.result-content{padding:22px 20px}
+.result-text{font-size:16px;line-height:1.8;color:var(--ink2)}
+.result-text h3{
+  font-family:'Nunito',sans-serif;
+  font-size:19px;font-weight:800;
+  color:var(--ink);margin-bottom:12px;letter-spacing:-.2px;
+}
+.result-text p{margin-bottom:12px}
+.result-text strong{font-weight:700;color:var(--ink)}
+
+/* RESULT ACTIONS */
+.result-actions{
+  padding:16px 20px;
+  border-top:2px solid var(--b);
+  display:flex;gap:10px;
+}
+.r-act{
+  flex:1;padding:14px 10px;
+  border:2px solid var(--b2);
+  border-radius:var(--rm);
+  background:var(--warm);
+  font-family:'Nunito',sans-serif;
+  font-size:14px;font-weight:800;
+  cursor:pointer;transition:all .15s;
+  color:var(--ink2);display:flex;
+  align-items:center;justify-content:center;gap:6px;
+}
+.r-act:hover{border-color:var(--g);color:var(--g);background:var(--gu)}
+.r-act.primary{background:var(--g);color:var(--white);border-color:var(--g)}
+.r-act.primary:hover{background:var(--g2)}
+
+/* FEEDBACK */
+.feedback-bar{
+  padding:16px 20px;
+  border-top:2px solid var(--b);
+  display:flex;align-items:center;gap:10px;
+}
+.fb-lbl{font-size:14px;color:var(--ink3);font-weight:600;flex:1}
+.fb-btn{
+  padding:9px 18px;
+  border:2px solid var(--b2);
+  border-radius:20px;
+  background:var(--warm);
+  font-family:'Nunito',sans-serif;
+  font-size:14px;font-weight:700;
+  cursor:pointer;transition:all .15s;color:var(--ink3);
+}
+.fb-btn:hover{border-color:var(--g);color:var(--g)}
+.fb-btn.on{background:var(--g);color:var(--white);border-color:var(--g)}
+
+/* NEXT ACTIONS */
+.next-actions{
+  padding:16px 20px;
+  border-top:2px solid var(--b);
+  display:flex;gap:8px;flex-wrap:wrap;
+}
+.n-act{
+  flex:1;min-width:120px;
+  padding:12px 14px;
+  border:2px solid var(--b);
+  border-radius:var(--rm);
+  background:var(--warm);
+  font-family:'Nunito',sans-serif;
+  font-size:13px;font-weight:700;
+  cursor:pointer;transition:all .15s;
+  color:var(--ink3);text-align:center;
+}
+.n-act:hover{border-color:var(--g2);color:var(--g)}
+
+/* ══ VERLAUF ══════════════════════════ */
+#v-verlauf{background:var(--warm)}
+.page-body{padding:20px 16px 100px}
+.page-title{
+  font-family:'Nunito',sans-serif;
+  font-size:26px;font-weight:800;
+  letter-spacing:-.3px;margin-bottom:4px;
+}
+.page-sub{font-size:15px;color:var(--ink4);margin-bottom:20px}
+
+.hist-item{
+  background:var(--white);
+  border:2px solid var(--b);
+  border-radius:var(--rm);
+  padding:18px 18px;
+  display:flex;gap:14px;
+  cursor:pointer;transition:all .15s;
+  margin-bottom:10px;
+}
+.hist-item:hover{border-color:var(--g2);box-shadow:var(--shm);transform:translateY(-1px)}
+.hist-ico{
+  width:42px;height:42px;
+  border-radius:12px;background:var(--gp);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+}
+.hist-title{font-size:15px;font-weight:700;margin-bottom:3px}
+.hist-prev{font-size:13px;color:var(--ink4);line-height:1.35;margin-bottom:4px}
+.hist-meta{font-size:11px;color:var(--ink4);font-weight:600}
+
+/* ══ EINSTELLUNGEN ════════════════════ */
+#v-settings{background:var(--warm)}
+.settings-card{
+  background:var(--white);
+  border:2px solid var(--b);
+  border-radius:var(--r);
+  overflow:hidden;margin-bottom:14px;
+}
+.settings-group{
+  font-size:12px;font-weight:800;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink4);
+  padding:12px 20px 8px;
+  background:var(--warm);
+  border-bottom:2px solid var(--b);
+}
+.srow{
+  padding:18px 20px;
+  display:flex;align-items:center;
+  justify-content:space-between;
+  border-bottom:2px solid var(--b);gap:14px;
+}
+.srow:last-child{border-bottom:none}
+.srow-l strong{display:block;font-size:16px;font-weight:700;margin-bottom:3px}
+.srow-l span{font-size:13px;color:var(--ink4)}
+
+.toggle{
+  width:52px;height:30px;
+  background:var(--b2);border-radius:15px;
+  position:relative;cursor:pointer;
+  transition:background .2s;border:none;flex-shrink:0;
+}
+.toggle.on{background:var(--g)}
+.toggle-k{
+  position:absolute;
+  width:22px;height:22px;
+  background:var(--white);
+  border-radius:50%;top:4px;left:4px;
+  transition:left .2s;
+  box-shadow:0 1px 4px rgba(0,0,0,.2);
+}
+.toggle.on .toggle-k{left:26px}
+
+.sel-row{display:flex;gap:6px;flex-wrap:wrap}
+.sel-btn{
+  padding:7px 14px;border-radius:20px;
+  border:2px solid var(--b2);
+  font-family:'Nunito',sans-serif;
+  font-size:13px;font-weight:700;
+  cursor:pointer;background:var(--warm);color:var(--ink3);
+  transition:all .15s;
+}
+.sel-btn.on{background:var(--ink);color:var(--white);border-color:var(--ink)}
+
+/* ══ BOTTOM NAV ═══════════════════════ */
+.bnav{
+  height:64px;
+  background:var(--white);
+  border-top:2px solid var(--b);
+  display:flex;align-items:stretch;
+  flex-shrink:0;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.bn{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:3px;
+  cursor:pointer;transition:all .15s;
+  border:none;background:transparent;
+  font-family:'Nunito',sans-serif;padding:0;
+}
+.bn:hover{background:var(--warm)}
+.bn-ico{font-size:22px;line-height:1;transition:transform .2s}
+.bn.on .bn-ico{transform:scale(1.15)}
+.bn-lbl{font-size:10px;font-weight:800;color:var(--ink4);letter-spacing:.04em;text-transform:uppercase}
+.bn.on .bn-lbl{color:var(--g)}
+
+/* ══ HELP OVERLAY ═════════════════════ */
+#help-overlay{
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.5);
+  z-index:200;
+  align-items:flex-end;justify-content:center;
+  animation:fadeIn .2s ease;
+}
+#help-overlay.show{display:flex}
+.help-sheet{
+  background:var(--white);
+  border-radius:var(--r) var(--r) 0 0;
+  padding:28px 24px 40px;
+  width:100%;max-width:480px;
+  animation:slideUp .3s ease;
+}
+.help-title{
+  font-family:'Nunito',sans-serif;
+  font-size:22px;font-weight:800;
+  margin-bottom:20px;letter-spacing:-.3px;
+}
+.help-item{
+  display:flex;gap:14px;margin-bottom:16px;
+  align-items:flex-start;
+}
+.help-ico{font-size:24px;flex-shrink:0;margin-top:2px}
+.help-text strong{display:block;font-size:15px;font-weight:700;margin-bottom:3px}
+.help-text span{font-size:13px;color:var(--ink3);line-height:1.5}
+.help-close{
+  width:100%;padding:16px;margin-top:20px;
+  background:var(--ink);color:var(--white);
+  border:none;border-radius:var(--rm);
+  font-family:'Nunito',sans-serif;
+  font-size:16px;font-weight:800;cursor:pointer;
+}
+.help-close:hover{background:var(--g)}
+
+/* ══ ANIMATIONS ═══════════════════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
+/* RESPONSIVE */
+@media(min-width:600px){
+  .home-list,.mod-body,.page-body{padding-left:24px;padding-right:24px}
+  .topbar{padding:0 28px}
+  .mod-header{padding:20px 28px 22px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ ONBOARDING ════════════════════════════ -->
+<div id="ob">
+<div class="ob-inner">
+  <div class="ob-logo">Clarity<b>AI</b></div>
+
+  <div class="ob-prog">
+    <div class="ob-seg on" id="os1"></div>
+    <div class="ob-seg" id="os2"></div>
+    <div class="ob-seg" id="os3"></div>
+  </div>
+
+  <!-- SCHRITT 1 -->
+  <div class="ob-step show" id="ob1">
+    <div class="ob-eyebrow">Willkommen</div>
+    <div class="ob-h">Ihre persönliche<br>KI-Assistentin.</div>
+    <div class="ob-sub">Clarity AI hilft Ihnen im digitalen Alltag – ganz einfach, ohne Vorkenntnisse. Richten wir die App kurz für Sie ein.</div>
+    <button class="ob-btn" onclick="obNext(2)">Los geht's →</button>
+  </div>
+
+  <!-- SCHRITT 2 -->
+  <div class="ob-step" id="ob2">
+    <div class="ob-eyebrow">Persönlich</div>
+    <div class="ob-h">Wie möchten<br>Sie angesprochen werden?</div>
+    <div class="ob-sub">Das ist freiwillig – die App funktioniert auch ohne Namen.</div>
+    <input class="ob-input" id="ob-name" type="text" placeholder="Ihr Vorname (freiwillig)">
+    <div class="ob-hint">Sie können das jederzeit in den Einstellungen ändern.</div>
+    <div class="field-label" style="margin-bottom:12px">Wie groß soll die Schrift sein?</div>
+    <div class="ob-sizes">
+      <div class="ob-size" onclick="obSize(this,'normal')">
+        <span class="ob-size-letter">A</span>
+        <span class="ob-size-lbl">Normal</span>
+      </div>
+      <div class="ob-size sel" onclick="obSize(this,'large')">
+        <span class="ob-size-letter">A</span>
+        <span class="ob-size-lbl">Groß</span>
+      </div>
+      <div class="ob-size" onclick="obSize(this,'xlarge')">
+        <span class="ob-size-letter">A</span>
+        <span class="ob-size-lbl">Sehr groß</span>
+      </div>
+    </div>
+    <button class="ob-btn" onclick="obNext(3)">Weiter →</button>
+    <button class="ob-btn-skip" onclick="obNext(3)">Überspringen</button>
+  </div>
+
+  <!-- SCHRITT 3 -->
+  <div class="ob-step" id="ob3">
+    <div class="ob-eyebrow">Fast fertig</div>
+    <div class="ob-h">Das können Sie<br>mit Clarity AI machen.</div>
+    <div class="ob-sub">Sechs Helfer für Ihren Alltag – einfach antippen und loslegen.</div>
+    <div class="ob-mods">
+      <div class="ob-mod"><div class="ob-mod-ico">💬</div><div><div class="ob-mod-name">Frag einfach</div><div class="ob-mod-desc">Stellen Sie mir jede Frage – ich antworte.</div></div></div>
+      <div class="ob-mod"><div class="ob-mod-ico">✉️</div><div><div class="ob-mod-name">Mail-Assistent</div><div class="ob-mod-desc">Was möchten Sie schreiben? Ich formuliere es.</div></div></div>
+      <div class="ob-mod"><div class="ob-mod-ico">🛡️</div><div><div class="ob-mod-name">Scam-Check</div><div class="ob-mod-desc">Verdächtige Nachricht? Ich prüfe sie sofort.</div></div></div>
+      <div class="ob-mod"><div class="ob-mod-ico">📋</div><div><div class="ob-mod-name">Klartext</div><div class="ob-mod-desc">Ich erkläre was der Brief bedeutet.</div></div></div>
+      <div class="ob-mod"><div class="ob-mod-ico">🔧</div><div><div class="ob-mod-name">Technik-Lotse</div><div class="ob-mod-desc">Schritt-für-Schritt Hilfe bei Geräteproblemen.</div></div></div>
+      <div class="ob-mod"><div class="ob-mod-ico">🔍</div><div><div class="ob-mod-name">Was seh ich?</div><div class="ob-mod-desc">Pflanze, Tier oder Pilz fotografieren & erkennen.</div></div></div>
+    </div>
+    <div class="ob-pwa">
+      <div class="ob-pwa-title">📱 Tipp: App auf den Homescreen legen</div>
+      <div class="pwa-tabs">
+        <div class="pwa-tab on" onclick="setPwa('iphone',this)">iPhone</div>
+        <div class="pwa-tab" onclick="setPwa('android',this)">Android</div>
+      </div>
+      <div class="pwa-dev show" id="pwa-iphone">
+        <div class="pwa-step"><div class="pwa-num">1</div><div>Tippen Sie unten in Safari auf das <strong>Teilen-Symbol</strong> (Quadrat mit Pfeil)</div></div>
+        <div class="pwa-step"><div class="pwa-num">2</div><div>Wählen Sie <strong>„Zum Home-Bildschirm"</strong></div></div>
+        <div class="pwa-step"><div class="pwa-num">3</div><div>Tippen Sie auf <strong>„Hinzufügen"</strong> – fertig!</div></div>
+      </div>
+      <div class="pwa-dev" id="pwa-android">
+        <div class="pwa-step"><div class="pwa-num">1</div><div>Tippen Sie oben rechts auf die <strong>drei Punkte</strong></div></div>
+        <div class="pwa-step"><div class="pwa-num">2</div><div>Wählen Sie <strong>„Zum Startbildschirm hinzufügen"</strong></div></div>
+        <div class="pwa-step"><div class="pwa-num">3</div><div>Tippen Sie auf <strong>„Hinzufügen"</strong> – fertig!</div></div>
+      </div>
+    </div>
+    <button class="ob-btn" onclick="startApp()">Clarity AI starten →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ APP ═══════════════════════════════════ -->
+<div id="app">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="t-logo" onclick="goHome()">Clarity<b>AI</b></div>
+  <div class="t-right">
+    <div class="size-row">
+      <button class="sz" onclick="setSize('normal',this)" title="Normale Schrift">A</button>
+      <button class="sz on" onclick="setSize('large',this)" title="Große Schrift">A</button>
+      <button class="sz" onclick="setSize('xlarge',this)" title="Sehr große Schrift">A</button>
+    </div>
+    <button class="help-btn" onclick="showHelp()" title="Hilfe">?</button>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="app-body">
+
+  <!-- HOME -->
+  <div class="view on" id="v-home">
+    <div class="home-top">
+      <div class="home-greeting" id="hgreet">GUTEN TAG</div>
+      <div class="home-title">Was kann ich für<br>Sie <em>tun?</em></div>
+      <div class="home-sub">Wählen Sie einfach einen Helfer.</div>
+    </div>
+    <div class="home-list">
+      <div class="mod-card" onclick="openMod('frag')">
+        <div class="mc-ico">💬</div>
+        <div class="mc-body">
+          <div class="mc-name">Frag einfach</div>
+          <div class="mc-desc">Stellen Sie mir jede Frage – ich antworte.</div>
+        </div>
+        <div class="mc-arrow">›</div>
+      </div>
+      <div class="mod-card" onclick="openMod('mail')">
+        <div class="mc-ico">✉️</div>
+        <div class="mc-body">
+          <div class="mc-name">Mail-Assistent</div>
+          <div class="mc-desc">Was möchten Sie schreiben? Ich formuliere es.</div>
+        </div>
+        <div class="mc-arrow">›</div>
+      </div>
+      <div class="mod-card" onclick="openMod('scam')">
+        <div class="mc-ico">🛡️</div>
+        <div class="mc-body">
+          <div class="mc-name">Scam-Check</div>
+          <div class="mc-desc">Verdächtige Nachricht? Ich sage Ihnen sofort ob es sicher ist.</div>
+        </div>
+        <div class="mc-arrow">›</div>
+      </div>
+      <div class="mod-card" onclick="openMod('klartext')">
+        <div class="mc-ico">📋</div>
+        <div class="mc-body">
+          <div class="mc-name">Klartext</div>
+          <div class="mc-desc">Ich erkläre was der Brief bedeutet.</div>
+        </div>
+        <div class="mc-arrow">›</div>
+      </div>
+      <div class="mod-card" onclick="openMod('technik')">
+        <div class="mc-ico">🔧</div>
+        <div class="mc-body">
+          <div class="mc-name">Technik-Lotse</div>
+          <div class="mc-desc">Schritt-für-Schritt Hilfe bei Geräteproblemen.</div>
+        </div>
+        <div class="mc-arrow">›</div>
+      </div>
+      <div class="mod-card" onclick="openMod('wasseich')">
+        <div class="mc-ico">🔍</div>
+        <div class="mc-body">
+          <div class="mc-name">Was seh ich?</div>
+          <div class="mc-desc">Pflanze, Tier oder Pilz fotografieren & erkennen.</div>
+        </div>
+        <div class="mc-arrow">›</div>
+        <div class="mc-new">NEU</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULE -->
+  <div class="view" id="v-module">
+    <div class="mod-view" id="mod-wrap"></div>
+  </div>
+
+  <!-- VERLAUF -->
+  <div class="view" id="v-verlauf">
+    <div class="page-body">
+      <div class="page-title">Verlauf</div>
+      <div class="page-sub">Ihre letzten Ergebnisse</div>
+      <div class="hist-item" onclick="openMod('mail')">
+        <div class="hist-ico">✉️</div>
+        <div><div class="hist-title">Beschwerde an Vermieter</div><div class="hist-prev">Sehr geehrte Damen und Herren, hiermit mache ich Sie auf einen Mangel aufmerksam…</div><div class="hist-meta">Mail-Assistent · Heute · Sachlich</div></div>
+      </div>
+      <div class="hist-item" onclick="openMod('scam')">
+        <div class="hist-ico">🛡️</div>
+        <div><div class="hist-title">SMS geprüft – Betrug erkannt</div><div class="hist-prev">⚠️ Hohe Betrugswahrscheinlichkeit erkannt</div><div class="hist-meta">Scam-Check · Gestern</div></div>
+      </div>
+      <div class="hist-item" onclick="openMod('klartext')">
+        <div class="hist-ico">📋</div>
+        <div><div class="hist-title">Steuerbescheid erklärt</div><div class="hist-prev">Das Finanzamt schreibt Ihnen, dass Sie 850 Euro nachzahlen müssen…</div><div class="hist-meta">Klartext · 08.05.2026</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EINSTELLUNGEN -->
+  <div class="view" id="v-settings">
+    <div class="page-body">
+      <div class="page-title">Einstellungen</div>
+      <div class="page-sub">Passen Sie Clarity AI an.</div>
+
+      <div class="settings-card">
+        <div class="settings-group">Darstellung</div>
+        <div class="srow">
+          <div class="srow-l"><strong>Schriftgröße</strong><span>Für bessere Lesbarkeit</span></div>
+          <div class="sel-row">
+            <button class="sel-btn" onclick="setSize2(this,'normal')">A</button>
+            <button class="sel-btn on" onclick="setSize2(this,'large')">A+</button>
+            <button class="sel-btn" onclick="setSize2(this,'xlarge')">A++</button>
+          </div>
+        </div>
+        <div class="srow">
+          <div class="srow-l"><strong>Sprache der App</strong><span>Wie soll Clarity AI sprechen?</span></div>
+          <div class="sel-row">
+            <button class="sel-btn on" onclick="setSel(this)">Einfach</button>
+            <button class="sel-btn" onclick="setSel(this)">Normal</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="settings-group">Funktionen</div>
+        <div class="srow">
+          <div class="srow-l"><strong>Diktierfunktion</strong><span>Sprechen statt tippen</span></div>
+          <button class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-k"></div></button>
+        </div>
+        <div class="srow">
+          <div class="srow-l"><strong>Vorlesen</strong><span>Ergebnisse vorlesen lassen</span></div>
+          <button class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-k"></div></button>
+        </div>
+        <div class="srow">
+          <div class="srow-l"><strong>Hinweise anzeigen</strong><span>Erklärungen beim ersten Öffnen</span></div>
+          <button class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-k"></div></button>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="settings-group">Datenschutz</div>
+        <div class="srow">
+          <div class="srow-l"><strong>Verlauf speichern für</strong><span>Danach automatisch gelöscht</span></div>
+          <div class="sel-row">
+            <button class="sel-btn" onclick="setSel(this)">7T</button>
+            <button class="sel-btn on" onclick="setSel(this)">30T</button>
+            <button class="sel-btn" onclick="setSel(this)">90T</button>
+          </div>
+        </div>
+        <div class="srow">
+          <div class="srow-l"><strong>Alle Daten löschen</strong><span>Verlauf zurücksetzen</span></div>
+          <button class="sel-btn" style="color:var(--red);border-color:var(--red)" onclick="alert('Alle Daten gelöscht (Demo)')">Löschen</button>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="settings-group">Sonstiges</div>
+        <div class="srow">
+          <div class="srow-l"><strong>Feedback geben</strong><span>Sagen Sie uns was Sie denken</span></div>
+          <button class="sel-btn" onclick="alert('Feedback (Demo)')">Öffnen</button>
+        </div>
+        <div class="srow">
+          <div class="srow-l"><strong>Einführung wiederholen</strong><span>Onboarding nochmal ansehen</span></div>
+          <button class="sel-btn" onclick="resetOb()">Starten</button>
+        </div>
+        <div class="srow">
+          <div class="srow-l"><strong>Abonnement</strong><span>Clarity AI · Kostenlos</span></div>
+          <button class="sel-btn" onclick="alert('Abo (Demo)')">Verwalten</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app-body -->
+
+<!-- BOTTOM NAV -->
+<div class="bnav">
+  <button class="bn on" onclick="switchView('home',this)" id="bn-home">
+    <div class="bn-ico">⊞</div>
+    <div class="bn-lbl">Module</div>
+  </button>
+  <button class="bn" onclick="switchView('verlauf',this)">
+    <div class="bn-ico">◷</div>
+    <div class="bn-lbl">Verlauf</div>
+  </button>
+  <button class="bn" onclick="switchView('settings',this)">
+    <div class="bn-ico">◎</div>
+    <div class="bn-lbl">Einstellungen</div>
+  </button>
+</div>
+
+</div><!-- /app -->
+
+<!-- HELP OVERLAY -->
+<div id="help-overlay" onclick="hideHelp()">
+  <div class="help-sheet" onclick="e=>e.stopPropagation()">
+    <div class="help-title">Wie funktioniert Clarity AI?</div>
+    <div class="help-item">
+      <div class="help-ico">💬</div>
+      <div class="help-text"><strong>Fragen stellen</strong><span>Tippen oder diktieren Sie einfach drauf los – keine Vorkenntnisse nötig.</span></div>
+    </div>
+    <div class="help-item">
+      <div class="help-ico">🎤</div>
+      <div class="help-text"><strong>Sprechen statt tippen</strong><span>Tippen Sie auf das Mikrofon-Symbol und sprechen Sie Ihr Anliegen.</span></div>
+    </div>
+    <div class="help-item">
+      <div class="help-ico">📷</div>
+      <div class="help-text"><strong>Fotos hochladen</strong><span>Fotografieren Sie Briefe, Nachrichten oder Pflanzen – Clarity AI erkennt den Inhalt.</span></div>
+    </div>
+    <div class="help-item">
+      <div class="help-ico">📋</div>
+      <div class="help-text"><strong>Ergebnis kopieren</strong><span>Nach jedem Ergebnis können Sie es kopieren, vorlesen lassen oder teilen.</span></div>
+    </div>
+    <button class="help-close" onclick="hideHelp()">Verstanden</button>
+  </div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────
+let userName = '', appMode = 'large', isRec = false, loadIv = null;
+const seen = new Set();
+
+// ── ONBOARDING ─────────────────────────────
+function obNext(n) {
+  document.querySelectorAll('.ob-step').forEach(s => s.classList.remove('show'));
+  document.getElementById('ob' + n).classList.add('show');
+  for (let i = 1; i <= 3; i++)
+    document.getElementById('os' + i).classList.toggle('on', i <= n);
+  document.getElementById('ob').scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function obSize(el, size) {
+  el.parentElement.querySelectorAll('.ob-size').forEach(e => e.classList.remove('sel'));
+  el.classList.add('sel');
+  appMode = size;
+  applySize(size);
+}
+
+function setPwa(dev, btn) {
+  document.querySelectorAll('.pwa-tab').forEach(t => t.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.pwa-dev').forEach(d => d.classList.remove('show'));
+  document.getElementById('pwa-' + dev).classList.add('show');
+}
+
+function startApp() {
+  userName = document.getElementById('ob-name').value.trim();
+  document.getElementById('ob').style.display = 'none';
+  document.getElementById('app').classList.add('show');
+  updateGreeting();
+  setInterval(updateGreeting, 60000);
+}
+
+function resetOb() {
+  document.getElementById('ob').style.display = 'block';
+  obNext(1);
+}
+
+// ── GREETING ──────────────────────────────
+function updateGreeting() {
+  const h = new Date().getHours();
+  const g = h < 12 ? 'GUTEN MORGEN' : h < 18 ? 'GUTEN TAG' : 'GUTEN ABEND';
+  document.getElementById('hgreet').textContent = g;
+}
+
+// ── FONT SIZE ─────────────────────────────
+const sizes = { normal: '15px', large: '17px', xlarge: '19px' };
+
+function applySize(s) {
+  document.documentElement.style.setProperty('--fs', sizes[s] || '17px');
+}
+
+function setSize(s, btn) {
+  document.querySelectorAll('.sz').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  applySize(s);
+}
+
+function setSize2(btn, s) {
+  btn.parentElement.querySelectorAll('.sel-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  applySize(s);
+}
+
+// ── NAVIGATION ─────────────────────────────
+function switchView(name, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+  document.getElementById('v-' + name).classList.add('on');
+  document.querySelectorAll('.bn').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+}
+
+function goHome() {
+  switchView('home', document.getElementById('bn-home'));
+}
+
+// ── HELP ──────────────────────────────────
+function showHelp() { document.getElementById('help-overlay').classList.add('show') }
+function hideHelp() { document.getElementById('help-overlay').classList.remove('show') }
+
+// ── MODULE DATA ────────────────────────────
+const MODS = {
+  frag: {
+    ico: '💬', title: 'Frag einfach',
+    sub: 'Ich beantworte alles – einfach, klar, verständlich.',
+    intro: 'Schreiben oder diktieren Sie einfach Ihre Frage. Es gibt keine falsche Frage. Ich antworte immer in einfacher Sprache.',
+    output: () => `<h3>Ihre Antwort</h3>
+<p>Inflation bedeutet, dass die Preise für Waren und Dienstleistungen im Laufe der Zeit steigen. Wenn Inflation herrscht, können Sie mit demselben Geldbetrag weniger kaufen als früher.</p>
+<p>Ein einfaches Beispiel: Kostet ein Brot heute 3 Euro, kann es nächstes Jahr schon 3,15 Euro kosten. Das klingt wenig – aber über viele Jahre macht es einen großen Unterschied.</p>
+<p>Die Europäische Zentralbank versucht, die Inflation bei etwa 2% pro Jahr zu halten.</p>`
+  },
+  mail: {
+    ico: '✉️', title: 'Mail-Assistent',
+    sub: 'Was möchten Sie schreiben? Ich formuliere es.',
+    intro: 'Geben Sie an an wen Sie schreiben möchten und was Sie sagen wollen. Je mehr Details Sie angeben, desto besser wird Ihr Brief.',
+    output: (tone) => `<h3>Betreff: Mängelbeseitigung – defekte Heizungsanlage</h3>
+<p>Sehr geehrte Damen und Herren,</p>
+<p>hiermit mache ich Sie auf einen seit dem 3. November bestehenden Mangel in meiner Wohnung aufmerksam: Die Heizungsanlage ist außer Betrieb.</p>
+<p>Ich bitte Sie, diesen Schaden umgehend zu beheben. Sollte innerhalb von 7 Werktagen keine Reaktion erfolgen, behalte ich mir eine Mietminderung vor.</p>
+<p>Mit freundlichen Grüßen,<br><em>[Ihr Name]</em></p>`
+  },
+  scam: {
+    ico: '🛡️', title: 'Scam-Check',
+    sub: 'Verdächtige Nachricht? Ich sage Ihnen sofort ob es sicher ist.',
+    intro: 'Fügen Sie die verdächtige Nachricht ein oder machen Sie einen Screenshot. Ich analysiere sie sofort und sage Ihnen ob Sie aufpassen müssen.',
+    isScam: true
+  },
+  klartext: {
+    ico: '📋', title: 'Klartext',
+    sub: 'Ich erkläre was der Brief bedeutet.',
+    intro: 'Fotografieren Sie den Brief oder fügen Sie den Text ein. Ich erkläre Ihnen in einfachen Worten was drin steht und was Sie tun müssen.',
+    output: () => `<h3>Was dieser Brief bedeutet</h3>
+<p>Das Finanzamt schreibt Ihnen, dass Sie <strong>850 Euro Steuern nachzahlen</strong> müssen.</p>
+<p>📅 <strong>Frist:</strong> Sie müssen bis zum <strong>31. Januar 2026</strong> zahlen.</p>
+<p>💡 <strong>Was Sie tun sollten:</strong> Überweisen Sie den Betrag rechtzeitig. Falls Sie meinen die Summe ist falsch, können Sie innerhalb von 30 Tagen Widerspruch einlegen.</p>
+<p>🔴 <strong>Dringlichkeit:</strong> Bitte bald handeln – die Frist läuft in 12 Tagen ab.</p>`
+  },
+  technik: {
+    ico: '🔧', title: 'Technik-Lotse',
+    sub: 'Schritt-für-Schritt Hilfe bei Geräteproblemen.',
+    intro: 'Wählen Sie zuerst Ihr Gerät und die Marke. Dann beschreiben Sie das Problem. Ich führe Sie Schritt für Schritt zur Lösung.',
+    output: () => `<h3>Lösung für Ihren Drucker</h3>
+<p><strong>Schritt 1:</strong> Schalten Sie den Drucker aus und nach 30 Sekunden wieder ein.</p>
+<p><strong>Schritt 2:</strong> Öffnen Sie auf Ihrem Computer die Systemsteuerung → „Drucker und Scanner" → Ihren Drucker → „Verwalten".</p>
+<p><strong>Schritt 3:</strong> Wählen Sie „Druckkopf reinigen" und folgen Sie den Anweisungen.</p>
+<p><strong>Schritt 4:</strong> Drucken Sie eine Testseite. Hat das geholfen?</p>`
+  },
+  wasseich: {
+    ico: '🔍', title: 'Was seh ich?',
+    sub: 'Pflanze, Tier oder Pilz fotografieren & erkennen.',
+    intro: 'Wählen Sie zuerst was Sie fotografieren möchten. Dann machen Sie ein Foto. Bei giftigen Pflanzen oder Pilzen erscheint sofort eine Warnung.'
+  }
+};
+
+const DICT_SAMPLES = {
+  frag: 'Was bedeutet eigentlich Inflation?',
+  mail: 'Meine Heizung ist seit drei Tagen kaputt und der Vermieter reagiert nicht.',
+  scam: 'Herzlichen Glückwunsch! Sie haben 5000 Euro gewonnen. Klicken Sie jetzt auf den Link.',
+  klartext: 'Steuerbescheid 2025. Nachzahlung 850 Euro. Frist 31. Januar 2026.',
+  technik: 'Mein Drucker druckt keine Farben mehr.',
+  wasseich: ''
+};
+
+const LOAD_MSGS = [
+  'Ich lese Ihren Text…',
+  'Ich denke nach…',
+  'Ich formuliere die Antwort…',
+  'Fast fertig…'
+];
+
+const ROTS = ['Was bedeutet…','Wie funktioniert…','Was ist ein…','Können Sie erklären…','Was muss ich tun wenn…','Warum heißt es…'];
+let rotIdx = 0, rotIv = null;
+
+// ── OPEN MODULE ────────────────────────────
+function openMod(mod) {
+  clearInterval(rotIv);
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+  document.getElementById('v-module').classList.add('on');
+  document.querySelectorAll('.bn').forEach(b => b.classList.remove('on'));
+
+  const m = MODS[mod];
+  const isFirst = !seen.has(mod);
+  seen.add(mod);
+
+  const wrap = document.getElementById('mod-wrap');
+  wrap.innerHTML = '';
+  wrap.className = 'mod-view';
+
+  const introHTML = isFirst ? `
+    <div class="first-intro" id="fi">
+      <div class="fi-ico">👋</div>
+      <div>
+        <div class="fi-title">So funktioniert es</div>
+        <div class="fi-text">${m.intro}</div>
+        <div class="fi-close" onclick="document.getElementById('fi').style.display='none'">Verstanden →</div>
+      </div>
+    </div>` : '';
+
+  if (mod === 'frag') { renderFrag(wrap, isFirst); return; }
+  if (mod === 'wasseich') { renderWasSeich(wrap, isFirst); return; }
+  if (mod === 'technik') { renderTechnik(wrap, isFirst); return; }
+  if (mod === 'scam') { renderScam(wrap, isFirst); return; }
+
+  // MAIL & KLARTEXT
+  const isMail = mod === 'mail';
+
+  wrap.innerHTML = `
+    ${modHeader(m, mod)}
+    <div class="mod-body" id="mbody">
+      ${introHTML}
+
+      ${isMail ? `
+      <div>
+        <div class="field-label">An wen schreiben Sie?</div>
+        <input class="field-input" id="f-recipient" placeholder="z.B. meinen Vermieter, die Krankenkasse…">
+      </div>` : ''}
+
+      <div>
+        <div class="field-label">${isMail ? 'Was möchten Sie sagen?' : 'Brief hier einfügen oder fotografieren'}</div>
+        <div class="dict-wrap">
+          <textarea class="field-ta" id="f-ta" placeholder="${isMail ? 'Beschreiben Sie Ihr Anliegen…' : 'Text des Briefes hier einfügen…'}" rows="5"></textarea>
+          <button class="dict-btn" id="dbtn" onclick="doDict('${mod}')" title="Diktieren">🎤</button>
+        </div>
+      </div>
+
+      ${!isMail ? `
+      <div class="big-opts">
+        <div class="big-opt" onclick="doOcr('${mod}')">
+          <div class="big-opt-ico">📷</div>
+          <div>Brief fotografieren oder Screenshot hochladen</div>
+        </div>
+      </div>` : `
+      <div>
+        <div class="field-label">Wie soll der Ton sein?</div>
+        <div class="chips">
+          <div class="chip on" onclick="doChip(this)">Höflich</div>
+          <div class="chip" onclick="doChip(this)">Sachlich</div>
+          <div class="chip" onclick="doChip(this)">Familiär</div>
+          <div class="chip" onclick="doChip(this)">Amtlich</div>
+        </div>
+      </div>
+      <div>
+        <div class="field-label">Wie lang soll der Brief sein?</div>
+        <div class="chips">
+          <div class="chip" onclick="doChip(this)">Kurz</div>
+          <div class="chip on" onclick="doChip(this)">Mittel</div>
+          <div class="chip" onclick="doChip(this)">Lang</div>
+        </div>
+      </div>`}
+
+      <div class="field-error" id="ferr">Bitte geben Sie noch an was Sie schreiben möchten.</div>
+
+      <button class="main-btn" onclick="generate('${mod}')">
+        ${isMail ? '✉️ Brief schreiben' : '📋 Brief erklären'} →
+      </button>
+
+      <div class="result-wrap" id="result-wrap">
+        <div class="result-loading" id="rloading">
+          <div class="loading-bars">
+            <div class="lb"></div><div class="lb"></div><div class="lb"></div>
+            <div class="lb"></div><div class="lb"></div>
+          </div>
+          <div class="loading-txt" id="ltxt">Ich lese Ihren Text…</div>
+        </div>
+        <div id="result-inner" style="display:none">
+          <div class="success-bar" id="sbar"><div class="success-dot"></div>Ihr Ergebnis ist fertig!</div>
+          <div class="result-content"><div class="result-text" id="rtxt"></div></div>
+          <div class="result-actions">
+            <button class="r-act" onclick="doSpeak()">🔊 Vorlesen</button>
+            <button class="r-act" onclick="doCopy()">📋 Kopieren</button>
+            <button class="r-act" onclick="doShare()">📤 Teilen</button>
+          </div>
+          <div class="feedback-bar">
+            <div class="fb-lbl">War das hilfreich?</div>
+            <button class="fb-btn" onclick="doFb(this)">👍 Ja</button>
+            <button class="fb-btn" onclick="doFb(this)">👎 Nein</button>
+          </div>
+          <div class="next-actions">
+            <div class="n-act" onclick="resetResult()">🔄 Nochmal</div>
+            <div class="n-act" onclick="goHome()">🏠 Startseite</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── FRAG EINFACH ──────────────────────────
+function renderFrag(wrap, isFirst) {
+  const m = MODS.frag;
+  wrap.innerHTML = `
+    ${modHeader(m, 'frag')}
+    <div class="mod-body">
+      ${isFirst ? `<div class="first-intro" id="fi"><div class="fi-ico">💬</div><div><div class="fi-title">So funktioniert es</div><div class="fi-text">${m.intro}</div><div class="fi-close" onclick="document.getElementById('fi').style.display='none'">Verstanden →</div></div></div>` : ''}
+
+      <div class="rotating-wrap">
+        <div class="rotating-hint" id="rot">Was bedeutet…</div>
+        <div class="dict-wrap" style="padding:10px 14px 14px">
+          <textarea class="field-ta" id="f-ta" placeholder="Tippen oder sprechen Sie einfach drauf los…" rows="4" style="border:none;padding:4px 4px;background:transparent;box-shadow:none"></textarea>
+          <button class="dict-btn" id="dbtn" onclick="doDict('frag')" title="Diktieren">🎤</button>
+        </div>
+      </div>
+
+      <button class="main-btn" onclick="generate('frag')">💬 Frag mich →</button>
+
+      <div class="result-wrap" id="result-wrap">
+        <div class="result-loading" id="rloading">
+          <div class="loading-bars">
+            <div class="lb"></div><div class="lb"></div><div class="lb"></div>
+            <div class="lb"></div><div class="lb"></div>
+          </div>
+          <div class="loading-txt" id="ltxt">Ich denke nach…</div>
+        </div>
+        <div id="result-inner" style="display:none">
+          <div class="success-bar" id="sbar"><div class="success-dot"></div>Ihre Antwort ist fertig!</div>
+          <div class="result-content"><div class="result-text" id="rtxt"></div></div>
+          <div class="result-actions">
+            <button class="r-act" onclick="doSpeak()">🔊 Vorlesen</button>
+            <button class="r-act" onclick="doCopy()">📋 Kopieren</button>
+            <button class="r-act" onclick="doShare()">📤 Teilen</button>
+          </div>
+          <div class="feedback-bar">
+            <div class="fb-lbl">War das hilfreich?</div>
+            <button class="fb-btn" onclick="doFb(this)">👍 Ja</button>
+            <button class="fb-btn" onclick="doFb(this)">👎 Nein</button>
+          </div>
+          <div class="next-actions">
+            <div class="n-act" onclick="resetResult()">🔄 Nochmal</div>
+            <div class="n-act" onclick="goHome()">🏠 Startseite</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  rotIdx = 0;
+  clearInterval(rotIv);
+  rotIv = setInterval(() => {
+    const el = document.getElementById('rot');
+    if (!el) { clearInterval(rotIv); return; }
+    el.classList.add('fade');
+    setTimeout(() => {
+      rotIdx = (rotIdx + 1) % ROTS.length;
+      el.textContent = ROTS[rotIdx];
+      el.classList.remove('fade');
+    }, 400);
+  }, 2800);
+}
+
+// ── SCAM ──────────────────────────────────
+function renderScam(wrap, isFirst) {
+  const m = MODS.scam;
+  wrap.innerHTML = `
+    ${modHeader(m, 'scam')}
+    <div class="mod-body">
+      ${isFirst ? `<div class="first-intro" id="fi"><div class="fi-ico">🛡️</div><div><div class="fi-title">So funktioniert es</div><div class="fi-text">${m.intro}</div><div class="fi-close" onclick="document.getElementById('fi').style.display='none'">Verstanden →</div></div></div>` : ''}
+
+      <div class="field-label">Wie möchten Sie die Nachricht eingeben?</div>
+      <div class="big-opts">
+        <div class="big-opt" onclick="doOcr('scam')">
+          <div class="big-opt-ico">📷</div>
+          <div><strong>Screenshot oder Foto</strong><br><span style="font-size:13px;color:var(--ink3)">Fotografieren Sie die Nachricht ab</span></div>
+        </div>
+        <div class="big-opt" onclick="document.getElementById('scam-ta-wrap').style.display='flex'">
+          <div class="big-opt-ico">✏️</div>
+          <div><strong>Nachricht eintippen oder diktieren</strong><br><span style="font-size:13px;color:var(--ink3)">Text direkt eingeben</span></div>
+        </div>
+      </div>
+
+      <div id="scam-ta-wrap" style="display:none;flex-direction:column;gap:10px">
+        <div class="dict-wrap">
+          <textarea class="field-ta" id="f-ta" placeholder="Verdächtige Nachricht hier einfügen…" rows="5"></textarea>
+          <button class="dict-btn" id="dbtn" onclick="doDict('scam')" title="Diktieren">🎤</button>
+        </div>
+      </div>
+
+      <button class="main-btn" onclick="generate('scam')">🛡️ Jetzt prüfen →</button>
+
+      <div class="result-wrap" id="result-wrap">
+        <div class="result-loading" id="rloading">
+          <div class="loading-bars">
+            <div class="lb"></div><div class="lb"></div><div class="lb"></div>
+            <div class="lb"></div><div class="lb"></div>
+          </div>
+          <div class="loading-txt" id="ltxt">Ich analysiere die Nachricht…</div>
+        </div>
+        <div id="result-inner" style="display:none">
+          <div class="scam-banner" id="scam-banner"></div>
+          <div class="result-content"><div class="result-text" id="rtxt"></div></div>
+          <div class="result-actions">
+            <button class="r-act" onclick="doShare()">📤 An Familie senden</button>
+            <button class="r-act" onclick="doCopy()">📋 Kopieren</button>
+          </div>
+          <div class="next-actions">
+            <div class="n-act" onclick="resetResult()">🔄 Nochmal</div>
+            <div class="n-act" onclick="goHome()">🏠 Startseite</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── TECHNIK ───────────────────────────────
+function renderTechnik(wrap, isFirst) {
+  const m = MODS.technik;
+  wrap.innerHTML = `
+    ${modHeader(m, 'technik')}
+    <div class="mod-body" id="mbody">
+      ${isFirst ? `<div class="first-intro" id="fi"><div class="fi-ico">🔧</div><div><div class="fi-title">So funktioniert es</div><div class="fi-text">${m.intro}</div><div class="fi-close" onclick="document.getElementById('fi').style.display='none'">Verstanden →</div></div></div>` : ''}
+
+      <div class="step-section">
+        <div>
+          <div class="field-label">Welches Gerät?</div>
+          <div class="chips" id="dev-chips">
+            <div class="chip" onclick="selectDevice(this,'Handy')">📱 Handy</div>
+            <div class="chip" onclick="selectDevice(this,'Computer')">💻 Computer</div>
+            <div class="chip" onclick="selectDevice(this,'Drucker')">🖨️ Drucker</div>
+            <div class="chip" onclick="selectDevice(this,'TV')">📺 TV</div>
+            <div class="chip" onclick="selectDevice(this,'Router')">📶 Router</div>
+            <div class="chip" onclick="selectDevice(this,'Anderes')">Anderes</div>
+          </div>
+        </div>
+
+        <div class="step-hidden" id="brand-step">
+          <div class="field-label">Welche Marke?</div>
+          <div class="chips" id="brand-chips">
+            <div class="chip" onclick="selectBrand(this,'Apple')">Apple</div>
+            <div class="chip" onclick="selectBrand(this,'Samsung')">Samsung</div>
+            <div class="chip" onclick="selectBrand(this,'Windows')">Windows</div>
+            <div class="chip" onclick="selectBrand(this,'Android')">Android</div>
+            <div class="chip" onclick="selectBrand(this,'HP')">HP</div>
+            <div class="chip" onclick="selectBrand(this,'Andere')">Andere</div>
+          </div>
+          <input class="field-input" id="brand-other" placeholder="Andere Marke eingeben…" style="display:none;margin-top:10px">
+        </div>
+
+        <div class="step-hidden" id="age-step">
+          <div class="field-label">Wie alt ist das Gerät?</div>
+          <div class="chips">
+            <div class="chip" onclick="doChip(this)">Neu (unter 2 Jahre)</div>
+            <div class="chip on" onclick="doChip(this)">Mittel (2–5 Jahre)</div>
+            <div class="chip" onclick="doChip(this)">Älter</div>
+          </div>
+        </div>
+
+        <div class="step-hidden" id="problem-step">
+          <div class="field-label">Was funktioniert nicht?</div>
+          <div class="dict-wrap">
+            <textarea class="field-ta" id="f-ta" placeholder="Beschreiben Sie das Problem…" rows="4"></textarea>
+            <button class="dict-btn" id="dbtn" onclick="doDict('technik')" title="Diktieren">🎤</button>
+          </div>
+          <div class="big-opts" style="margin-top:0">
+            <div class="big-opt" onclick="doOcr('technik')">
+              <div class="big-opt-ico">📷</div>
+              <div><strong>Fehlermeldung fotografieren</strong><br><span style="font-size:13px;color:var(--ink3)">Foto der Fehlermeldung hochladen</span></div>
+            </div>
+          </div>
+          <div class="field-error" id="ferr">Bitte beschreiben Sie noch das Problem.</div>
+          <button class="main-btn" onclick="generate('technik')">🔧 Lösung finden →</button>
+        </div>
+
+        <div class="result-wrap" id="result-wrap">
+          <div class="result-loading" id="rloading">
+            <div class="loading-bars">
+              <div class="lb"></div><div class="lb"></div><div class="lb"></div>
+              <div class="lb"></div><div class="lb"></div>
+            </div>
+            <div class="loading-txt" id="ltxt">Ich suche die beste Lösung…</div>
+          </div>
+          <div id="result-inner" style="display:none">
+            <div class="success-bar" id="sbar"><div class="success-dot"></div>Ihre Schritt-für-Schritt Anleitung ist fertig!</div>
+            <div class="result-content"><div class="result-text" id="rtxt"></div></div>
+            <div class="result-actions">
+              <button class="r-act" onclick="doSpeak()">🔊 Vorlesen</button>
+              <button class="r-act" onclick="doCopy()">📋 Kopieren</button>
+              <button class="r-act" onclick="doShare()">📤 Teilen</button>
+            </div>
+            <div class="feedback-bar">
+              <div class="fb-lbl">Hat das geholfen?</div>
+              <button class="fb-btn" onclick="doFb(this)">👍 Ja</button>
+              <button class="fb-btn" onclick="doFb(this)">👎 Nein</button>
+            </div>
+            <div class="next-actions">
+              <div class="n-act" onclick="resetResult()">🔄 Nochmal</div>
+              <div class="n-act" onclick="goHome()">🏠 Startseite</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function selectDevice(chip, val) {
+  document.querySelectorAll('#dev-chips .chip').forEach(c => c.classList.remove('on'));
+  chip.classList.add('on');
+  const brandStep = document.getElementById('brand-step');
+  brandStep.className = 'step-visible';
+  if (val === 'Anderes') {
+    document.getElementById('brand-chips').style.display = 'none';
+    document.getElementById('brand-other').style.display = 'block';
+    document.getElementById('age-step').className = 'step-visible';
+    document.getElementById('problem-step').className = 'step-visible';
+  }
+}
+
+function selectBrand(chip, val) {
+  document.querySelectorAll('#brand-chips .chip').forEach(c => c.classList.remove('on'));
+  chip.classList.add('on');
+  document.getElementById('age-step').className = 'step-visible';
+  document.getElementById('problem-step').className = 'step-visible';
+  if (val === 'Andere') {
+    document.getElementById('brand-other').style.display = 'block';
+  }
+}
+
+// ── WAS SEH ICH ───────────────────────────
+function renderWasSeich(wrap, isFirst) {
+  const m = MODS.wasseich;
+  const cats = [
+    ['🌿','Pflanze'],['🌳','Baum'],['🍄','Pilz'],
+    ['🐦','Vogel'],['🦋','Insekt'],['🐾','Tier'],['🍓','Beere']
+  ];
+
+  wrap.innerHTML = `
+    ${modHeader(m, 'wasseich')}
+    <div class="mod-body">
+      ${isFirst ? `<div class="first-intro" id="fi"><div class="fi-ico">🔍</div><div><div class="fi-title">So funktioniert es</div><div class="fi-text">${m.intro}</div><div class="fi-close" onclick="document.getElementById('fi').style.display='none'">Verstanden →</div></div></div>` : ''}
+
+      <div class="poison-warn">
+        <div style="font-size:22px;flex-shrink:0">⚠️</div>
+        <div>Bei giftigen Pflanzen, Pilzen oder Beeren erscheint sofort eine <strong>rote Warnung</strong>. Im Zweifelsfall immer einen Experten fragen.</div>
+      </div>
+
+      <div>
+        <div class="field-label">Was möchten Sie erkennen?</div>
+        <div class="cat-grid">
+          ${cats.map(([ico, name]) => `
+          <div class="cat-card" onclick="selectCat(this)">
+            <div class="cat-card-ico">${ico}</div>
+            <div class="cat-card-name">${name}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <div class="step-hidden" id="photo-step">
+        <div class="field-label">Jetzt fotografieren</div>
+        <div class="upload-zone" onclick="alert('Kamera / Galerie öffnen (Demo)')">
+          <div class="upload-zone-ico">📸</div>
+          <div class="upload-zone-title">Foto aufnehmen oder hochladen</div>
+          <div class="upload-zone-sub">Tippen Sie hier um Ihre Kamera zu öffnen</div>
+        </div>
+        <button class="main-btn" style="margin-top:4px" onclick="generate('wasseich')">🔍 Erkennen →</button>
+      </div>
+
+      <div class="result-wrap" id="result-wrap">
+        <div class="result-loading" id="rloading">
+          <div class="loading-bars">
+            <div class="lb"></div><div class="lb"></div><div class="lb"></div>
+            <div class="lb"></div><div class="lb"></div>
+          </div>
+          <div class="loading-txt" id="ltxt">Ich analysiere das Foto…</div>
+        </div>
+        <div id="result-inner" style="display:none">
+          <div class="success-bar" id="sbar"><div class="success-dot"></div>Ich habe es erkannt!</div>
+          <div class="result-content"><div class="result-text" id="rtxt"></div></div>
+          <div class="result-actions">
+            <button class="r-act" onclick="doSpeak()">🔊 Vorlesen</button>
+            <button class="r-act" onclick="doShare()">📤 Teilen</button>
+          </div>
+          <div class="next-actions">
+            <div class="n-act" onclick="resetResult()">🔄 Nochmal</div>
+            <div class="n-act" onclick="goHome()">🏠 Startseite</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function selectCat(card) {
+  document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('on'));
+  card.classList.add('on');
+  const photoStep = document.getElementById('photo-step');
+  if (photoStep) photoStep.className = 'step-visible';
+}
+
+// ── MOD HEADER ────────────────────────────
+function modHeader(m, mod) {
+  return `
+    <div class="mod-header">
+      <div class="mod-back" onclick="goHome()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Zurück
+      </div>
+      <div class="mod-head-row">
+        <div class="mod-head-ico">${m.ico}</div>
+        <div>
+          <div class="mod-head-title">${m.title}</div>
+          <div class="mod-head-sub">${m.sub}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── CONTROLS ──────────────────────────────
+function doChip(chip) {
+  chip.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  chip.classList.add('on');
+}
+
+// ── DICT ──────────────────────────────────
+function doDict(mod) {
+  isRec = !isRec;
+  const btn = document.getElementById('dbtn');
+  if (btn) btn.classList.toggle('rec', isRec);
+  if (btn) btn.textContent = isRec ? '⏹' : '🎤';
+  if (isRec) {
+    setTimeout(() => {
+      isRec = false;
+      if (btn) { btn.classList.remove('rec'); btn.textContent = '🎤'; }
+      const ta = document.getElementById('f-ta');
+      if (ta) {
+        ta.value = DICT_SAMPLES[mod] || '';
+        ta.style.borderColor = 'var(--g)';
+        setTimeout(() => { ta.style.borderColor = ''; }, 1500);
+      }
+    }, 2000);
+  }
+}
+
+// ── OCR ───────────────────────────────────
+const OCR_SAMPLES = {
+  mail: 'Heizung defekt seit Montag. Vermieter informieren. Reparatur verlangen.',
+  scam: 'Konto gesperrt. Sofort klicken: bit.ly/xxxxx Sonst Verlust.',
+  klartext: 'Steuerbescheid 2025. Nachzahlung: 850 Euro. Frist: 31.01.2026.',
+  technik: 'Fehler 0x0000007B. Drucker reagiert nicht.'
+};
+
+function doOcr(mod) {
+  const ta = document.getElementById('f-ta');
+  if (!ta) return;
+  const scamWrap = document.getElementById('scam-ta-wrap');
+  if (scamWrap) scamWrap.style.display = 'flex';
+  ta.value = '';
+  const text = OCR_SAMPLES[mod] || 'Erkannter Text aus dem Foto.';
+  let i = 0;
+  const iv = setInterval(() => {
+    ta.value += text[i++];
+    if (i >= text.length) {
+      clearInterval(iv);
+      ta.style.borderColor = 'var(--g)';
+      setTimeout(() => { ta.style.borderColor = ''; }, 1500);
+    }
+  }, 28);
+}
+
+// ── GENERATE ──────────────────────────────
+function generate(mod) {
+  const ta = document.getElementById('f-ta');
+  const rw = document.getElementById('result-wrap');
+  const ferr = document.getElementById('ferr');
+
+  if (mod !== 'wasseich' && mod !== 'scam' && ta && !ta.value.trim()) {
+    if (ferr) { ferr.classList.add('show'); setTimeout(() => ferr.classList.remove('show'), 3000); }
+    ta.style.borderColor = 'var(--red)';
+    setTimeout(() => { ta.style.borderColor = ''; }, 1500);
+    return;
+  }
+
+  if (!rw) return;
+  rw.classList.add('show');
+
+  const rloading = document.getElementById('rloading');
+  const ri = document.getElementById('result-inner');
+  if (rloading) rloading.style.display = 'flex';
+  if (ri) ri.style.display = 'none';
+
+  // Animate loading text
+  let li = 0;
+  clearInterval(loadIv);
+  loadIv = setInterval(() => {
+    const ltxt = document.getElementById('ltxt');
+    if (ltxt) {
+      ltxt.style.opacity = '0';
+      setTimeout(() => {
+        if (ltxt) { ltxt.textContent = LOAD_MSGS[li % LOAD_MSGS.length]; ltxt.style.opacity = '1'; li++; }
+      }, 300);
+    }
+  }, 900);
+
+  rw.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  setTimeout(() => {
+    clearInterval(loadIv);
+    if (rloading) rloading.style.display = 'none';
+    if (ri) ri.style.display = 'block';
+
+    const m = MODS[mod];
+    const rtxt = document.getElementById('rtxt');
+    const sbar = document.getElementById('sbar');
+    const scamBanner = document.getElementById('scam-banner');
+
+    if (mod === 'scam') {
+      if (scamBanner) {
+        scamBanner.className = 'scam-banner danger';
+        scamBanner.innerHTML = '⚠️  Vorsicht – hohe Betrugswahrscheinlichkeit!';
+      }
+      if (rtxt) rtxt.innerHTML = `<h3>Analyse</h3>
+<p>🔴 Künstlicher Zeitdruck erzeugt</p>
+<p>🔴 Unbekannte, verkürzte Link-Adresse</p>
+<p>🔴 Unpersönliche Anrede</p>
+<p>🔴 Rechtschreibfehler entdeckt</p>
+<p><strong>Was tun?</strong> Klicken Sie auf keinen Link. Löschen Sie die Nachricht. Rufen Sie Ihre Bank direkt an.</p>`;
+    } else if (mod === 'wasseich') {
+      if (rtxt) rtxt.innerHTML = `<h3>Das ist ein Gewöhnlicher Blauhelm-Pilz</h3>
+<p>🍄 <strong>Name:</strong> Psilocybe semilanceata</p>
+<p>📍 <strong>Wo er wächst:</strong> Auf Wiesen und Weiden, oft nach Regen</p>
+<p>ℹ️ <strong>Wissenswertes:</strong> Dieser Pilz ist klein und kegelförmig mit einem braunen Hut.</p>
+<p style="background:var(--redl);border:2px solid #F5B0B0;border-radius:12px;padding:14px;color:var(--red);font-weight:700;margin-top:8px">⚠️ Achtung: Dieser Pilz ist nicht essbar. Bitte nicht anfassen oder essen.</p>`;
+    } else {
+      if (sbar) { sbar.classList.add('show'); setTimeout(() => sbar.classList.remove('show'), 2500); }
+      if (rtxt && m.output) rtxt.innerHTML = m.output();
+    }
+
+    if (ri) ri.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 2200);
+}
+
+function resetResult() {
+  const rw = document.getElementById('result-wrap');
+  if (rw) { rw.classList.remove('show'); }
+  const ta = document.getElementById('f-ta');
+  if (ta) ta.value = '';
+}
+
+// ── COPY / SHARE / SPEAK ──────────────────
+function doCopy() {
+  const txt = document.getElementById('rtxt');
+  if (!txt) return;
+  navigator.clipboard.writeText(txt.innerText).then(() => {
+    const btns = document.querySelectorAll('.r-act');
+    btns.forEach(b => { if (b.textContent.includes('Kopieren')) { b.textContent = '✓ Kopiert!'; setTimeout(() => { b.innerHTML = '📋 Kopieren'; }, 1600); } });
+  });
+}
+
+function doShare() { alert('Teilen per WhatsApp oder E-Mail (Demo)') }
+function doSpeak() {
+  const txt = document.getElementById('rtxt');
+  if (!txt || !window.speechSynthesis) return;
+  const u = new SpeechSynthesisUtterance(txt.innerText);
+  u.lang = 'de-DE'; u.rate = 0.9;
+  window.speechSynthesis.speak(u);
+}
+
+function doFb(btn) {
+  btn.parentElement.querySelectorAll('.fb-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  btn.textContent = btn.textContent.includes('Ja') ? '👍 Danke!' : '👎 Schade…';
+}
+
+// ── SETTINGS ──────────────────────────────
+function setSel(btn) {
+  btn.parentElement.querySelectorAll('.sel-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+// Init greeting
+updateGreeting();
+</script>
+</body>
+</html>
