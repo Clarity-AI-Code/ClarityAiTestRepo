@@ -47,6 +47,43 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
+/*Banner*/
+.demo-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 18px;
+  background: var(--amberl);
+  border-bottom: 2px solid #E8C060;
+  flex-shrink: 0;
+}
+.demo-banner-ico { font-size: 18px; flex-shrink: 0; line-height: 1; }
+.demo-banner-text {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--amber);
+  line-height: 1.45;
+}
+.demo-banner-text strong {
+  font-weight: 800;
+  display: block;
+  margin-bottom: 1px;
+  font-size: 13px;
+}
+.demo-banner-close {
+  font-size: 18px;
+  color: var(--amber);
+  cursor: pointer;
+  flex-shrink: 0;
+  opacity: 0.7;
+  background: none;
+  border: none;
+  line-height: 1;
+  padding: 2px;
+}
+.demo-banner-close:hover { opacity: 1; }
+
 
 
 /* ══ ONBOARDING ═══════════════════════ */
@@ -956,6 +993,16 @@ body{
     </div>
     <button class="help-btn" onclick="showHelp()" title="Hilfe">?</button>
   </div>
+</div>
+
+<!-- DEMO-HINWEIS-BANNER -->
+<div class="demo-banner" id="demo-banner">
+  <div class="demo-banner-ico">🧪</div>
+  <div class="demo-banner-text">
+    <strong>Demo-Modus aktiv</strong>
+    Antworten sind noch Platzhalter – keine echte KI.
+  </div>
+  <button class="demo-banner-close" onclick="document.getElementById('demo-banner').style.display='none'" title="Schließen">✕</button>
 </div>
 
 <!-- BODY -->
